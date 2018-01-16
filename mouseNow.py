@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 # mouseNow.py - Displays the mouse cursor's current position
-from pymouse import PyMouse as mouse
+from PIL import ImageGrab
+from pymouse import PyMouse
 print("Press Ctrl+C to quit")
 
 retina = 2
-m = mouse()
+m = PyMouse()
 
 try:
     while True:
         # Get and print mouse coordinates
         x, y = m.position()
-        positionStr = 'X: {:4} Y: {:4}'.format(int(x), int(y))
-        # pixelColor = pyautogui.screenshot().getpixel((x, y))
+        positionStr = 'X: {:4} Y: {:4}'.format(round(x), round(y))
+        # pixelColor = ImageGrab.grab().getpixel((x*2, y*2))
         # positionStr += ' RGB: ({:s}, {:s}, {:s})'.format(str(pixelColor[0]).rjust(3), str(pixelColor[1]).rjust(3), str(pixelColor[2]).rjust(3))
 
         print(positionStr, end='')

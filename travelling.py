@@ -4,7 +4,7 @@ from helper import *
 import clipboard
 
 def getCompassCoords():
-    coords = findImg('compass')
+    coords = findImg('labels/compass')
     if coords:
         x, y = coords
         y = y - 20
@@ -14,41 +14,49 @@ def getCompassCoords():
 
 def setNavigator(location):
     print('Сначала зададим локацию в навигаторе')
-    print(getCompassCoords())
-    niceClick(getCompassCoords())
-    waitClick('field')
+    niceClick(getCompassCoords(), size=5)
+    waitClick('field', area=(-20, -5, 20, 5))
     clipboard.copy(location)
     pyautogui.hotkey('command', 'v')
     if not imgExists('btn/accept'):
         print('Данной локации не существует!')
         print('Выход')
         return
-    niceClick('btn/accept')
+    niceClick('btn/accept', size=3)
     print('🔔  Локация задана', location)
-    niceClick('chat_line')
+    niceClick('chat_line', area=(-100, -40, 100, 40))
 
 def travel(location = None):
     try:
+        niceClick('chat_line', area=(-100, -40, 100, 40)) # focus window
+
+        if not imgExists('labels/map'):
+            print('no map label')
+            niceClick('location', size=7)
+            print('Please toggle map')
+            sleepUntilImg('labels/map')
+        print('travel')
         if location:
             setNavigator(location)
-            print('А теперь пристегнитесь, начинаем путешествие в', location);
         print('Поехали')
         while imgExists('location_compass'):
-            niceMove('location_compass')
             print('⏳  Ждём перехода...')
-            sleepWhileImg(('cannot_go', 'cannot_go2'))
+            sleepWhileImages(('cannot_go', 'cannot_go2'))
+            print('Подождали')
             while not imgExists('labels/map'):
                 print('Something is wrong, we are not on location')
                 if imgExists('vs'):
                     print('We are in the battle')
                     battle()
+            if not imgExists('location_compass'):
+                print('Компаса нет')
             print('🚗  Перемещение в новую локацию')
-            niceClick('location_compass', 2)
+            niceClick('location_compass', 2, area=(40, -3, 80, 3))
 
         print('Итерация закончена')
         if imgExists('labels/map') and not imgExists('location_compass'):
             print('🎉  Путешествие окончено, поздравляем')
-            return true
+            return True
         else:
             travel()
 
@@ -56,18 +64,12 @@ def travel(location = None):
         print('\nДо новых встреч!')
 
 def battle():
-    waitClick('btn/exit')
-    waitClick('btn/in_location')
-    waitClick('btn/capital')
+    waitClick('btn/exit', size=3)
+    waitClick('btn/in_location', size=3)
+    waitClick('btn/capital', size=3)
 
 def main():
     location = input('Введите новую локацию: ')
-
-    niceClick('chat_line') # focus window
-
-    if not imgExists('labels/map'):
-        niceClick('location')
-
     travel(location)
 
 if __name__ == '__main__':
