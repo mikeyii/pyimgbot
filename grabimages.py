@@ -3,11 +3,14 @@
 import pyautogui as gui
 
 imageDir = 'images/';
-
+retina = True
 
 def saveImage(size=10):
     x, y = gui.position()
-    im = gui.screenshot(region=(x*2 - size/2, y*2 - size/2, size, size))
+    if retina:
+        x = x * 2
+        y = y * 2
+    im = gui.screenshot(region=(x - size/2, y - size/2, size, size))
     print(x, y)
     result = tuple(gui.locateAllOnScreen(im, grayscale=True))
     im.show()

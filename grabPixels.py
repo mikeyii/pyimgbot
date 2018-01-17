@@ -5,12 +5,16 @@ from pymouse import PyMouse
 from PIL import ImageDraw, ImageGrab
 
 m = PyMouse()
+retina = True
 
 
 def savePixel():
     x, y = m.position()
     im = ImageGrab.grab()
-    pixel = im.getpixel((x*2, y*2))
+    if retina:
+        x = x * 2
+        y = y * 2
+    pixel = im.getpixel((x, y))
     pixelStr = '({}, {}, {}, {}),'.format(pixel[0], pixel[1], pixel[2], pixel[3])
     distance = input('Enter distance(5):')
     if distance == '':
