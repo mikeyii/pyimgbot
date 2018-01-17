@@ -2,8 +2,7 @@ import pyautogui
 from math import floor
 import random
 import time
-import humanmouse
-import images
+from . import humanmouse
 import clipboard
 
 imageDir = 'images/'
@@ -96,7 +95,7 @@ def _unpackXYPause(x, y=None, pause=None):
 
 def move(x, y=None, pause=None, size=0, area=()):
     if isinstance(x, str):
-        x, y, pause = _unpackXYPause(images.find(x), y)
+        x, y, pause = _unpackXYPause(findImg(x), y)
     else:
         x, y, pause = _unpackXYPause(x, y, pause)  # for use move('images', 3) when 3 is pause
 
@@ -125,7 +124,7 @@ def click(x, y=None, pause=None, clicks=1, size=0, area=()):
 
 
 def waitClick(image, size=0, area=()):
-    coords = images.sleepUntilImg(image)
+    coords = sleepUntilImg(image)
     click(coords, size, area)
 
 
