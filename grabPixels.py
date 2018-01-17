@@ -5,11 +5,9 @@ from pymouse import PyMouse
 from PIL import ImageDraw, ImageGrab
 
 m = PyMouse()
-infoStopped = False
 
 
 def savePixel():
-    infoStopped = True
     x, y = m.position()
     im = ImageGrab.grab()
     pixel = im.getpixel((x*2, y*2))
@@ -46,10 +44,17 @@ def generateImage(pixel, im, distance = 5):
                 prev = (x, y)
     return result
 
-try:
-    while True:
-        input('Press Enter to save pixel')
-        # Blocks until you press esc.
-        savePixel()
-except KeyboardInterrupt:
-    print('\nDone.')
+
+def main():
+    print('Press Ctrl+C to exit')
+    try:
+        while True:
+            input('Press Enter to save pixel')
+            # Blocks until you press esc.
+            savePixel()
+    except KeyboardInterrupt:
+        print('\nDone.')
+
+
+if __name__ == "__main__":
+    main()
