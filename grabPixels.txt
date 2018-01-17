@@ -1,0 +1,1 @@
+"slack": {"pixelcolor": (225, 169, 66, 255), "distance": 20},

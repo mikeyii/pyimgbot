@@ -3,10 +3,13 @@
 
 from pymouse import PyMouse
 from PIL import ImageDraw, ImageGrab
+from string import Template
 
 m = PyMouse()
 retina = True
 
+def isYes(value):
+    return value.lower() in ('y', 'yes')
 
 def savePixel():
     x, y = m.position()
@@ -15,22 +18,27 @@ def savePixel():
         x = x * 2
         y = y * 2
     pixel = im.getpixel((x, y))
-    pixelStr = '({}, {}, {}, {}),'.format(pixel[0], pixel[1], pixel[2], pixel[3])
-    distance = input('Enter distance(5):')
-    if distance == '':
-        distance = 5
-    else:
-        distance = int(distance)
-    result = generateImage(pixel, im, distance)
-    print('Catched ', len(result))
-    im.save('1.png')
-    im.show()
-    save = input('Do you want to save? ')
-    if save == 'y':
-        name = input('Write name for that pixel: ')
-        pixelStr = '"{}": '.format(name) + '{"pixel":' +  pixelStr + '"distance": ' + distance + '},\n'
-        with open("grabPixels.txt", "a") as myfile:
-                myfile.write(pixelStr)
+    pixelStr = '({}, {}, {}, {})'.format(pixel[0], pixel[1], pixel[2], pixel[3])
+    changeDistance = 'y'
+    while isYes(changeDistance):
+        distance = input('Enter distance(5):')
+        if distance == '':
+            distance = 5
+        else:
+            distance = int(distance)
+        result = generateImage(pixel, im, distance)
+        print('Catched ', len(result))
+        im.show()
+        save = input('Do you want to save it?(y): ') or 'y'
+        if isYes(save):
+            name = input('Write name for that pixel: ')
+            s = Template('"$name": {"pixelcolor": $pixel, "distance": $distance},\n')
+            with open("grabPixels.txt", "a") as myfile:
+                myfile.write(s.substitute(name=name, pixel=pixelStr, distance=distance))
+            changeDistance = 'n'
+
+        else:
+            changeDistance = input('Do you want to changeDistance?(n): ')
 
 
 def generateImage(pixel, im, distance = 5):
